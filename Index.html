@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Urlaubsfinanzen">
+<meta name="theme-color" content="#0ea5e9">
+<title>Urlaubsfinanzen</title>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#eff6ff,#ecfeff);min-height:100vh;color:#1f2937;-webkit-text-size-adjust:100%}
+.wrap{max-width:1200px;margin:0 auto;padding:12px;padding-bottom:40px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.08);padding:16px;margin-bottom:16px}
+h1{font-size:22px;display:flex;align-items:center;gap:8px}
+h2{font-size:17px;margin-bottom:12px;color:#374151}
+.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:none;border-radius:10px;padding:9px 14px;font-weight:600;transition:.15s}
+button:active{transform:scale(.97)}
+.b-gray{background:#e5e7eb;color:#374151}
+.b-blue{background:#0ea5e9;color:#fff}
+.b-green{background:#16a34a;color:#fff}
+.b-red{background:#dc2626;color:#fff}
+.b-orange{background:#ea580c;color:#fff}
+.b-off{background:#d1d5db;color:#4b5563}
+.tabs{display:flex;border-bottom:2px solid #e5e7eb;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{flex:1 0 auto;white-space:nowrap;background:none;border-radius:0;color:#6b7280;padding:12px 12px;border-bottom:3px solid transparent;margin-bottom:-2px;font-size:14px}
+.tab.on{color:#0ea5e9;border-bottom-color:#0ea5e9}
+input,select{font:inherit;width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;min-width:0}
+input:focus,select:focus{outline:2px solid #38bdf8;border-color:transparent}
+label{display:block;font-size:13px;color:#6b7280;margin-bottom:4px;font-weight:600}
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g-cat{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}
+.g-m{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.stat{border-radius:14px;padding:16px;color:#fff}
+.stat small{display:block;opacity:.85;text-transform:uppercase;letter-spacing:.04em;font-size:12px;margin-bottom:4px}
+.stat b{font-size:26px}
+.stat i{display:block;font-style:normal;font-size:12px;opacity:.9;margin-top:6px}
+.s-green{background:linear-gradient(90deg,#22c55e,#10b981)}
+.s-red{background:linear-gradient(90deg,#ef4444,#ec4899)}
+.s-blue{background:linear-gradient(90deg,#0ea5e9,#06b6d4)}
+.s-orange{background:linear-gradient(90deg,#f97316,#ef4444)}
+.box{border-radius:14px;padding:14px;margin-bottom:12px}
+.bx-green{background:#f0fdf4}.bx-red{background:#fef2f2}.bx-blue{background:#eff6ff}.bx-gray{background:#f9fafb}.bx-orange{background:#fff7ed}
+.inner{background:#fff;border:2px solid #bbf7d0;border-radius:12px;padding:12px;margin-bottom:12px}
+.cat{background:#fff;border-radius:12px;padding:10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.dot{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 6px}
+.dot.s{width:32px;height:32px;font-size:15px;margin:0;flex-shrink:0}
+.cat p{font-size:12px;color:#6b7280}
+.cat b{font-size:15px}
+.alert{background:#eff6ff;border-left:4px solid #0ea5e9;border-radius:10px;padding:12px;margin-bottom:16px;font-size:14px;color:#075985}
+.vc{border-radius:14px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.08);background:#fff}
+.vh{background:linear-gradient(90deg,#0ea5e9,#06b6d4);color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:flex-start}
+.vh h3{font-size:20px}
+.vh button{background:rgba(255,255,255,.2);color:#fff;padding:6px 10px}
+.vb{padding:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.mini{background:#f9fafb;border-radius:10px;padding:10px}
+.mini small{color:#6b7280;font-size:12px}
+.mini b{display:block;font-size:17px}
+.item{display:flex;align-items:center;gap:8px;background:#f9fafb;border-radius:10px;padding:9px;margin-bottom:8px}
+.item .t{flex:1;min-width:0}
+.item .t p{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .t small{color:#6b7280;font-size:12px}
+.item .amt{font-weight:700;font-size:14px;white-space:nowrap}
+.item .x{background:none;color:#ef4444;padding:4px 8px;font-size:16px}
+.it-g{background:#f0fdf4}.it-g.plan{background:#f3f4f6;color:#6b7280}
+.it-r{background:#fff7ed}.it-r.plan{background:#f3f4f6;color:#6b7280}
+.it-b{background:#eff6ff}
+.mh{background:linear-gradient(90deg,#0ea5e9,#06b6d4);color:#fff;padding:12px 14px}
+.mh.fut{opacity:.65}
+.mh h3{display:flex;justify-content:space-between;align-items:center;font-size:17px}
+.mh .tag{font-size:11px;background:rgba(255,255,255,.25);padding:2px 8px;border-radius:6px}
+.mh .l{font-size:13px;opacity:.95;margin-top:2px}
+.mh .tot{font-size:21px;font-weight:700;border-top:1px solid rgba(255,255,255,.4);margin-top:6px;padding-top:4px}
+.mb{padding:12px;max-height:380px;overflow-y:auto}
+.mb h4{font-size:13px;color:#374151;margin:6px 0}
+.empty{text-align:center;color:#9ca3af;padding:30px 10px}
+.pos{color:#16a34a}.neg{color:#dc2626}
+.bar{height:8px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin-bottom:12px}
+.bar div{height:100%;background:#16a34a}
+.bar div.over{background:#dc2626}
+@media(max-width:480px){h1{font-size:19px}.stat b{font-size:22px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const CATS = [
+  { name: 'Pauschal',    emoji: '💶', color: '#6366f1' },
+  { name: 'Flug',        emoji: '✈️', color: '#0ea5e9' },
+  { name: 'Hotel',       emoji: '🏨', color: '#a855f7' },
+  { name: 'Nebenkosten', emoji: '🔧', color: '#6b7280' },
+  { name: 'Verpflegung', emoji: '🍴', color: '#f97316' },
+  { name: 'Shopping',    emoji: '🛍️', color: '#ec4899' },
+  { name: 'Aktivitäten', emoji: '📷', color: '#22c55e' },
+  { name: 'Mietwagen',   emoji: '🚗', color: '#3b82f6' },
+  { name: 'Benzin',      emoji: '⛽', color: '#ef4444' },
+];
+const INTERVALS = {
+  monthly:   { label: 'Monatlich',       step: 1 },
+  quarterly: { label: 'Vierteljährlich', step: 3 },
+  yearly:    { label: 'Jährlich',        step: 12 },
+};
+
+const pad = n => String(n).padStart(2, '0');
+const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const fmtDate = s => { if (!s) return ''; const [y,m,d] = s.split('-'); return `${d}.${m}.${y}`; };
+const eur = n => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+const catOf = name => CATS.find(c => c.name === name) || CATS[0];
+
+const STORAGE_KEY = 'urlaubsfinanzen_v1';
+const hasClaudeStorage = () => typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+// Speichert in Claude-Artefakten (window.storage), sonst im Browser (localStorage)
+const loadData = async () => {
+  try {
+    if (hasClaudeStorage()) {
+      const r = await window.storage.get(STORAGE_KEY);
+      return r && r.value ? JSON.parse(r.value) : {};
+    }
+  } catch (e) {}
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { return {}; }
+};
+const saveData = async d => {
+  const s = JSON.stringify(d);
+  try { if (hasClaudeStorage()) { await window.storage.set(STORAGE_KEY, s); return; } } catch (e) {}
+  try { localStorage.setItem(STORAGE_KEY, s); } catch (e) {}
+};
+
+function App() {
+  const now = new Date();
+  const curY = now.getFullYear();
+  const curM = now.getMonth() + 1;
+
+  const [loaded, setLoaded] = useState(false);
+  const [year, setYear] = useState(curY);
+  const [tab, setTab] = useState('overview');
+  const [monthly, setMonthly] = useState(1300);
+  const [offYears, setOffYears] = useState([]);
+  const [vacations, setVacations] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [deposits, setDeposits] = useState([]);
+  const [recurring, setRecurring] = useState([]);
+  const [showBackup, setShowBackup] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [backupText, setBackupText] = useState('');
+
+  const [nv, setNv] = useState({ destination: '', startDate: '', endDate: '', estimatedCost: '' });
+  const [ne, setNe] = useState({ vacationId: '', description: '', amount: '', category: 'Pauschal', paymentDate: todayStr() });
+  const [nd, setNd] = useState({ month: curM, amount: '' });
+  const [nr, setNr] = useState({ name: '', amount: '', interval: 'monthly', start: `${curY}-${pad(curM)}-01`, end: '' });
+
+  const applyData = d => {
+    setMonthly(d.monthly ?? 1300);
+    setOffYears(d.offYears || []);
+    setVacations(d.vacations || []);
+    setExpenses(d.expenses || []);
+    setDeposits(d.deposits || []);
+    setRecurring(d.recurring || []);
+  };
+
+  useEffect(() => {
+    loadData().then(d => { applyData(d || {}); setLoaded(true); });
+  }, []);
+
+  useEffect(() => {
+    if (loaded) saveData({ monthly, offYears, vacations, expenses, deposits, recurring });
+  }, [loaded, monthly, offYears, vacations, expenses, deposits, recurring]);
+
+  const exportData = () => {
+    setBackupText(JSON.stringify({ monthly, offYears, vacations, expenses, deposits, recurring }));
+    setShowBackup(true);
+  };
+  const importData = () => {
+    try {
+      const d = JSON.parse(backupText);
+      if (!d || typeof d !== 'object') throw new Error('invalid');
+      if (!confirm('Aktuelle Daten werden durch die eingefügten Daten ersetzt. Fortfahren?')) return;
+      applyData(d);
+      alert('Daten importiert ✓');
+      setShowBackup(false);
+    } catch (e) { alert('Ungültige Backup-Daten. Bitte den kompletten Text einfügen.'); }
+  };
+  const copyBackup = () => {
+    try { navigator.clipboard.writeText(backupText).then(() => alert('Kopiert ✓'), () => alert('Bitte Text manuell markieren und kopieren.')); }
+    catch (e) { alert('Bitte Text manuell markieren und kopieren.'); }
+  };
+
+  const autoOn = !offYears.includes(year);
+  const toggleAuto = () => setOffYears(autoOn ? [...offYears, year] : offYears.filter(y => y !== year));
+
+  const isPlannedYM = (y, m) => y > curY || (y === curY && m > curM);
+  const isPlanned = m => isPlannedYM(year, m);
+
+  // Automatische Einzahlung am 1. des Monats
+  const autoFor = (y, m) => {
+    if (offYears.includes(y)) return 0;
+    if (isPlannedYM(y, m)) return 0;
+    return monthly;
+  };
+
+  // Laufende Kosten: Fälligkeit am 1. des Monats
+  const recurDueIn = (y, m) => recurring.filter(r => {
+    const [sy, sm] = r.start.split('-').map(Number);
+    const cur = y * 12 + m;
+    const diff = cur - (sy * 12 + sm);
+    if (diff < 0) return false;
+    if (r.end) {
+      const [ey, em] = r.end.split('-').map(Number);
+      if (cur > ey * 12 + em) return false;
+    }
+    return diff % INTERVALS[r.interval].step === 0;
+  });
+  const recurAmt = (y, m) => isPlannedYM(y, m) ? 0 : recurDueIn(y, m).reduce((s, r) => s + r.amount, 0);
+  const recurPlannedAmt = (y, m) => recurDueIn(y, m).reduce((s, r) => s + r.amount, 0);
+
+  const manualDeps = m => deposits.filter(d => d.year === year && d.month === m);
+  const monthIn = m => autoFor(year, m) + manualDeps(m).reduce((s, d) => s + d.amount, 0);
+  const monthExpList = m => expenses.filter(e => e.year === year && e.month === m);
+  const monthOut = m => monthExpList(m).reduce((s, e) => s + e.amount, 0) + recurAmt(year, m);
+
+  const yearIn = MONTHS.reduce((s, _, i) => s + monthIn(i + 1), 0);
+  const yearOut = MONTHS.reduce((s, _, i) => s + monthOut(i + 1), 0);
+  const yearRecur = MONTHS.reduce((s, _, i) => s + recurAmt(year, i + 1), 0);
+  const yearRecurPlanned = MONTHS.reduce((s, _, i) => s + recurPlannedAmt(year, i + 1), 0);
+  const balance = yearIn - yearOut;
+  const projIn = deposits.filter(d => d.year === year).reduce((s, d) => s + d.amount, 0) + (autoOn ? monthly * 12 : 0);
+  const projOut = expenses.filter(e => e.year === year).reduce((s, e) => s + e.amount, 0) + yearRecurPlanned;
+  const projBalance = projIn - projOut;
+  const catTotal = name => expenses.filter(e => e.year === year && e.category === name).reduce((s, e) => s + e.amount, 0);
+
+  const vacInMonth = m => {
+    const ms = `${year}-${pad(m)}-01`, me = `${year}-${pad(m)}-31`;
+    return vacations.filter(v => v.startDate <= me && v.endDate >= ms);
+  };
+  const vacSpent = id => expenses.filter(e => e.vacationId === id).reduce((s, e) => s + e.amount, 0);
+  // Urlaube des gewählten Jahres (nach Reisebeginn): geschätzte vs. tatsächliche Kosten
+  const yearVacs = vacations.filter(v => v.startDate.slice(0, 4) === String(year)).sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const estYear = yearVacs.reduce((s, v) => s + v.estimatedCost, 0);
+  const actYear = yearVacs.reduce((s, v) => s + vacSpent(v.id), 0);
+  // Prognose Jahresende: pro Urlaub der höhere Wert aus Schätzung und tatsächlichen Kosten + alle laufenden Kosten des Jahres
+  const projVacYear = yearVacs.reduce((s, v) => s + Math.max(v.estimatedCost, vacSpent(v.id)), 0);
+  const projExpYear = projVacYear + yearRecurPlanned;
+
+  const upcoming = (() => {
+    const t = todayStr();
+    const lim = new Date(Date.now() + 30 * 864e5);
+    const l = `${lim.getFullYear()}-${pad(lim.getMonth()+1)}-${pad(lim.getDate())}`;
+    return vacations.filter(v => v.startDate >= t && v.startDate <= l).sort((a, b) => a.startDate.localeCompare(b.startDate));
+  })();
+
+  const addVacation = () => {
+    if (!nv.destination || !nv.startDate || !nv.endDate) return alert('Bitte Reiseziel, Reisebeginn und Reiseende ausfüllen.');
+    if (nv.endDate < nv.startDate) return alert('Das Reiseende liegt vor dem Reisebeginn.');
+    const data = { destination: nv.destination, startDate: nv.startDate, endDate: nv.endDate, estimatedCost: parseFloat(nv.estimatedCost) || 0 };
+    if (editId && vacations.some(v => v.id === editId)) {
+      setVacations(vacations.map(v => v.id === editId ? { ...v, ...data } : v));
+    } else {
+      setVacations([...vacations, { id: Date.now(), ...data }]);
+    }
+    setEditId(null);
+    setNv({ destination: '', startDate: '', endDate: '', estimatedCost: '' });
+  };
+  const startEdit = v => {
+    setEditId(v.id);
+    setNv({ destination: v.destination, startDate: v.startDate, endDate: v.endDate, estimatedCost: v.estimatedCost ? String(v.estimatedCost) : '' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const cancelEdit = () => {
+    setEditId(null);
+    setNv({ destination: '', startDate: '', endDate: '', estimatedCost: '' });
+  };
+  const addExpense = () => {
+    if (!ne.vacationId || !ne.description || !ne.amount || !ne.paymentDate) return alert('Bitte Urlaub, Beschreibung, Betrag und Datum ausfüllen.');
+    const [y, m] = ne.paymentDate.split('-');
+    setExpenses([...expenses, { id: Date.now(), vacationId: Number(ne.vacationId), description: ne.description, amount: parseFloat(ne.amount), category: ne.category, paymentDate: ne.paymentDate, year: parseInt(y), month: parseInt(m) }]);
+    setNe({ ...ne, description: '', amount: '' });
+  };
+  const addDeposit = () => {
+    if (!nd.amount) return;
+    setDeposits([...deposits, { id: Date.now(), year, month: parseInt(nd.month), amount: parseFloat(nd.amount), description: (nd.description || '').trim() }]);
+    setNd({ ...nd, amount: '', description: '' });
+  };
+  const addRecurring = () => {
+    if (!nr.name || !nr.amount || !nr.start) return alert('Bitte Bezeichnung, Betrag und Beginn ausfüllen.');
+    if (nr.end && nr.end < nr.start) return alert('Das Ende liegt vor dem Beginn.');
+    setRecurring([...recurring, { id: Date.now(), name: nr.name, amount: parseFloat(nr.amount), interval: nr.interval, start: nr.start.slice(0, 7), end: nr.end ? nr.end.slice(0, 7) : '' }]);
+    setNr({ ...nr, name: '', amount: '', end: '' });
+  };
+  const delVacation = id => { if (confirm('Urlaub und alle zugehörigen Ausgaben löschen?')) { setVacations(vacations.filter(v => v.id !== id)); setExpenses(expenses.filter(e => e.vacationId !== id)); } };
+  const delExpense = id => setExpenses(expenses.filter(e => e.id !== id));
+  const delDeposit = id => setDeposits(deposits.filter(d => d.id !== id));
+  const delRecurring = id => { if (confirm('Laufende Kosten löschen?')) setRecurring(recurring.filter(r => r.id !== id)); };
+
+  const fmtYM = s => { if (!s) return ''; const [y, m] = s.split('-'); return `${m}.${y}`; };
+
+  const ExpenseItem = ({ e, showVac }) => {
+    const c = catOf(e.category);
+    const v = vacations.find(x => x.id === e.vacationId);
+    return (
+      <div className="item">
+        <div className="dot s" style={{ background: c.color }}>{c.emoji}</div>
+        <div className="t">
+          <p>{e.description}</p>
+          <small>{showVac && v ? v.destination + ' • ' : ''}{e.category} • {fmtDate(e.paymentDate)}</small>
+        </div>
+        <span className="amt neg">- {eur(e.amount)}</span>
+        <button className="x" onClick={() => delExpense(e.id)}>🗑️</button>
+      </div>
+    );
+  };
+
+  return (
+    <div className="wrap">
+      <div className="card">
+        <div className="top">
+          <h1>📅 Urlaubsfinanzen {year}</h1>
+          <div className="row">
+            <button className="b-gray" onClick={() => setYear(year - 1)}>← {year - 1}</button>
+            <button className="b-blue" onClick={() => setYear(curY)}>Heute</button>
+            <button className="b-gray" onClick={() => setYear(year + 1)}>{year + 1} →</button>
+          </div>
+        </div>
+
+        <div className="tabs">
+          {[['overview','Übersicht'],['vacations','Urlaube'],['calendar','Kalender'],['deposits','Einzahlungen'],['recurring','Laufende Kosten']].map(([k, l]) => (
+            <button key={k} className={'tab' + (tab === k ? ' on' : '')} onClick={() => setTab(k)}>{l}</button>
+          ))}
+        </div>
+
+        {tab === 'overview' && (<>
+          <div className="grid g3" style={{ marginBottom: 16 }}>
+            <div className="stat s-green">
+              <small>Einzahlungen (bisher)</small>
+              <b>{eur(yearIn)}</b>
+              {year >= curY && autoOn && <i>Prognose Jahresende: {eur(projIn)}</i>}
+            </div>
+            <div className="stat s-red">
+              <small>Ausgaben</small>
+              <b>{eur(yearOut)}</b>
+              {yearRecur > 0 && <i>davon laufende Kosten: {eur(yearRecur)}</i>}
+              {projExpYear > 0 && <i>Prognose Jahresende: {eur(projExpYear)}</i>}
+              {projExpYear > 0 && <i style={{ opacity: .75 }}>(je Urlaub der höhere Wert aus Schätzung und tatsächlich + laufende Kosten)</i>}
+            </div>
+            <div className={'stat ' + (balance >= 0 ? 's-blue' : 's-orange')}>
+              <small>Verfügbar (aktuell)</small>
+              <b>{eur(balance)}</b>
+              {year >= curY && (autoOn || projExpYear > 0) && <i>Prognose Jahresende: {eur(projIn - projExpYear)}</i>}
+              {year >= curY && (autoOn || projExpYear > 0) && <i style={{ opacity: .75 }}>(Einzahlungen {eur(projIn)} − Ausgaben {eur(projExpYear)})</i>}
+            </div>
+          </div>
+
+          {upcoming.length > 0 && (
+            <div className="alert">
+              <b>📅 Anstehende Reisen (nächste 30 Tage)</b>
+              {upcoming.map(v => (
+                <div key={v.id} style={{ marginTop: 4 }}><b>{v.destination}</b> – Reisebeginn {fmtDate(v.startDate)} (geschätzt {eur(v.estimatedCost)})</div>
+              ))}
+            </div>
+          )}
+
+          <div className="grid g2" style={{ marginBottom: 16 }}>
+            <div className="box bx-red">
+              <h2>💸 Ausgabe hinzufügen</h2>
+              <div className="f2">
+                <select value={ne.vacationId} onChange={e => setNe({ ...ne, vacationId: e.target.value })}>
+                  <option value="">Urlaub wählen</option>
+                  {vacations.map(v => <option key={v.id} value={v.id}>{v.destination}</option>)}
+                </select>
+                <select value={ne.category} onChange={e => setNe({ ...ne, category: e.target.value })}>
+                  {CATS.map(c => <option key={c.name} value={c.name}>{c.emoji} {c.name}</option>)}
+                </select>
+              </div>
+              <div className="f2">
+                <input type="text" placeholder="Beschreibung" value={ne.description} onChange={e => setNe({ ...ne, description: e.target.value })} />
+                <input type="number" inputMode="decimal" step="0.01" placeholder="Betrag (€)" value={ne.amount} onChange={e => setNe({ ...ne, amount: e.target.value })} />
+              </div>
+              <div style={{ marginBottom: 10 }}>
+                <label>Zahlungsdatum</label>
+                <input type="date" value={ne.paymentDate} onChange={e => setNe({ ...ne, paymentDate: e.target.value })} />
+              </div>
+              <button className="b-red" style={{ width: '100%' }} onClick={addExpense}>➕ Hinzufügen</button>
+              {vacations.length === 0 && <p style={{ fontSize: 13, color: '#6b7280', marginTop: 8 }}>Lege zuerst unter „Urlaube“ einen Urlaub an.</p>}
+            </div>
+          </div>
+
+          <div className="box bx-gray">
+            <h2>Urlaubskosten {year}: geschätzt vs. tatsächlich</h2>
+            {yearVacs.length === 0 ? (
+              <p style={{ color: '#9ca3af', fontSize: 13, fontStyle: 'italic' }}>Keine Urlaube mit Reisebeginn in {year}</p>
+            ) : (<>
+              <div className="two">
+                <div className="mini" style={{ background: '#fff' }}><small>Geschätzt gesamt</small><b>{eur(estYear)}</b></div>
+                <div className="mini" style={{ background: '#fff' }}><small>Tatsächlich gesamt</small><b className={estYear > 0 && actYear > estYear ? 'neg' : 'pos'}>{eur(actYear)}</b></div>
+              </div>
+              {yearVacs.map(v => {
+                const spent = vacSpent(v.id);
+                const diff = v.estimatedCost - spent;
+                const over = v.estimatedCost > 0 && spent > v.estimatedCost;
+                const pct = v.estimatedCost > 0 ? Math.min(100, spent / v.estimatedCost * 100) : 0;
+                return (
+                  <div key={v.id} style={{ background: '#fff', borderRadius: 12, padding: 12, marginBottom: 8 }}>
+                    <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                      <b style={{ fontSize: 14 }}>{v.destination}</b>
+                      <small style={{ color: '#6b7280' }}>{fmtDate(v.startDate)}</small>
+                    </div>
+                    <div className="two" style={{ margin: '8px 0' }}>
+                      <div className="mini"><small>Geschätzt</small><b>{eur(v.estimatedCost)}</b></div>
+                      <div className="mini"><small>Tatsächlich</small><b className={over ? 'neg' : 'pos'}>{eur(spent)}</b></div>
+                    </div>
+                    {v.estimatedCost > 0 && <div className="bar" style={{ marginBottom: 4 }}><div className={over ? 'over' : ''} style={{ width: pct + '%' }}></div></div>}
+                    {v.estimatedCost > 0 && (
+                      <small className={over ? 'neg' : 'pos'}>
+                        {diff >= 0 ? `Noch ${eur(diff)} unter der Schätzung` : `${eur(-diff)} über der Schätzung`}
+                      </small>
+                    )}
+                  </div>
+                );
+              })}
+            </>)}
+          </div>
+
+          <div className="box bx-gray">
+            <h2>Ausgaben nach Kategorie ({year})</h2>
+            <div className="grid g-cat">
+              {CATS.map(c => (
+                <div className="cat" key={c.name}>
+                  <div className="dot" style={{ background: c.color }}>{c.emoji}</div>
+                  <p>{c.name}</p>
+                  <b>{eur(catTotal(c.name))}</b>
+                </div>
+              ))}
+              <div className="cat">
+                <div className="dot" style={{ background: '#ea580c' }}>🔁</div>
+                <p>Laufende Kosten</p>
+                <b>{eur(yearRecur)}</b>
+              </div>
+            </div>
+          </div>
+        </>)}
+
+        {tab === 'vacations' && (<>
+          <div className="box bx-blue">
+            <h2>📍 Neuen Urlaub planen</h2>
+            <div className="f2">
+              <div><label>Reiseziel</label><input type="text" placeholder="z. B. Mallorca" value={nv.destination} onChange={e => setNv({ ...nv, destination: e.target.value })} /></div>
+              <div><label>Geschätzte Kosten (€)</label><input type="number" inputMode="decimal" step="0.01" value={nv.estimatedCost} onChange={e => setNv({ ...nv, estimatedCost: e.target.value })} /></div>
+              <div><label>Reisebeginn (TT.MM.JJJJ)</label><input type="date" value={nv.startDate} onChange={e => setNv({ ...nv, startDate: e.target.value })} /></div>
+              <div><label>Reiseende (TT.MM.JJJJ)</label><input type="date" value={nv.endDate} onChange={e => setNv({ ...nv, endDate: e.target.value })} /></div>
+            </div>
+            {editId && <p style={{ fontSize: 13, color: '#075985', background: '#e0f2fe', borderRadius: 8, padding: '8px 10px', marginBottom: 10 }}>✏️ Du bearbeitest gerade einen Urlaub.</p>}
+            <div className="row" style={{ flexWrap: 'nowrap' }}>
+              <button className="b-blue" style={{ flex: 1 }} onClick={addVacation}>{editId ? '💾 Änderungen speichern' : '➕ Urlaub hinzufügen'}</button>
+              {editId && <button className="b-gray" onClick={cancelEdit}>Abbrechen</button>}
+            </div>
+          </div>
+
+          <div className="grid g2">
+            {vacations.length === 0 ? (
+              <div className="empty" style={{ gridColumn: '1/-1' }}>📍<br />Noch keine Urlaube geplant</div>
+            ) : [...vacations].sort((a, b) => a.startDate.localeCompare(b.startDate)).map(v => {
+              const spent = vacSpent(v.id);
+              const pct = v.estimatedCost > 0 ? Math.min(100, spent / v.estimatedCost * 100) : 0;
+              const list = expenses.filter(e => e.vacationId === v.id);
+              return (
+                <div className="vc" key={v.id}>
+                  <div className="vh">
+                    <div><h3>{v.destination}</h3><div style={{ opacity: .9, fontSize: 14 }}>{fmtDate(v.startDate)} – {fmtDate(v.endDate)}</div></div>
+                    <div className="row" style={{ flexWrap: 'nowrap', gap: 6 }}>
+                      <button onClick={() => startEdit(v)}>✏️</button>
+                      <button onClick={() => delVacation(v.id)}>🗑️</button>
+                    </div>
+                  </div>
+                  <div className="vb">
+                    <div className="two">
+                      <div className="mini"><small>Geschätzt</small><b>{eur(v.estimatedCost)}</b></div>
+                      <div className="mini"><small>Tatsächlich</small><b className={spent > v.estimatedCost && v.estimatedCost > 0 ? 'neg' : 'pos'}>{eur(spent)}</b></div>
+                    </div>
+                    {v.estimatedCost > 0 && <div className="bar"><div className={spent > v.estimatedCost ? 'over' : ''} style={{ width: pct + '%' }}></div></div>}
+                    <h4 style={{ fontSize: 14, marginBottom: 8 }}>Ausgaben</h4>
+                    {list.length === 0 ? <p style={{ color: '#9ca3af', fontSize: 13, fontStyle: 'italic' }}>Noch keine Ausgaben erfasst</p>
+                      : list.map(e => <ExpenseItem key={e.id} e={e} />)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>)}
+
+        {tab === 'calendar' && (
+          <div className="grid g-m">
+            {MONTHS.map((name, i) => {
+              const m = i + 1;
+              const inn = monthIn(m), out = monthOut(m), bal = inn - out;
+              const planned = isPlanned(m);
+              const vs = vacInMonth(m);
+              const el = monthExpList(m);
+              const dl = manualDeps(m);
+              const due = recurDueIn(year, m);
+              const nothing = vs.length === 0 && el.length === 0 && dl.length === 0 && due.length === 0 && !autoOn;
+              return (
+                <div className="vc" key={m}>
+                  <div className={'mh' + (planned ? ' fut' : '')}>
+                    <h3>{name} {planned && <span className="tag">Geplant</span>}</h3>
+                    <div className="l">+ {eur(inn)}</div>
+                    <div className="l">- {eur(out)}</div>
+                    <div className="tot">{eur(bal)}</div>
+                  </div>
+                  <div className="mb">
+                    {nothing && <p style={{ color: '#9ca3af', fontSize: 13, fontStyle: 'italic' }}>Keine Einträge</p>}
+
+                    {vs.length > 0 && <><h4>📍 Urlaube</h4>
+                      {vs.map(v => (
+                        <div className="item it-b" key={v.id}>
+                          <div className="t"><p>{v.destination}</p><small>{fmtDate(v.startDate)} – {fmtDate(v.endDate)}</small></div>
+                        </div>
+                      ))}</>}
+
+                    {(autoOn || dl.length > 0) && <h4>📈 Einzahlungen</h4>}
+                    {autoOn && (
+                      <div className={'item it-g' + (planned ? ' plan' : '')}>
+                        <div className="t"><p>{planned ? 'Geplant (am 1.)' : 'Automatisch (am 1.)'}</p><small>01.{pad(m)}.{year}</small></div>
+                        <span className={'amt' + (planned ? '' : ' pos')}>+ {eur(monthly)}</span>
+                      </div>
+                    )}
+                    {dl.map(d => (
+                      <div className="item it-g" key={d.id}>
+                        <div className="t"><p>{d.description || 'Zusätzliche Einzahlung'}</p>{d.description && <small>Zusätzliche Einzahlung</small>}</div>
+                        <span className="amt pos">+ {eur(d.amount)}</span>
+                        <button className="x" onClick={() => delDeposit(d.id)}>🗑️</button>
+                      </div>
+                    ))}
+
+                    {due.length > 0 && <><h4>🔁 Laufende Kosten</h4>
+                      {due.map(r => (
+                        <div className={'item it-r' + (planned ? ' plan' : '')} key={r.id}>
+                          <div className="t"><p>{r.name}</p><small>{planned ? 'Geplant' : 'Gebucht'} am 01.{pad(m)}.{year} • {INTERVALS[r.interval].label}</small></div>
+                          <span className={'amt' + (planned ? '' : ' neg')}>- {eur(r.amount)}</span>
+                        </div>
+                      ))}</>}
+
+                    {el.length > 0 && <><h4>💸 Ausgaben</h4>
+                      {el.map(e => <ExpenseItem key={e.id} e={e} showVac />)}</>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === 'deposits' && (<>
+          <div className="box bx-green">
+            <h2>📈 Einzahlungen {year}</h2>
+            <div className="inner">
+              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <label style={{ margin: 0 }}>Automatisch am 1. jedes Monats</label>
+                <button className={autoOn ? 'b-green' : 'b-off'} onClick={toggleAuto}>
+                  {autoOn ? 'Aktiv für ' + year : 'Inaktiv für ' + year}
+                </button>
+              </div>
+              <div className="row" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
+                <input type="number" inputMode="decimal" step="0.01" value={monthly} onChange={e => setMonthly(parseFloat(e.target.value) || 0)} />
+                <span style={{ whiteSpace: 'nowrap', fontWeight: 600 }}>€ / Monat</span>
+              </div>
+              <p style={{ fontSize: 13, marginTop: 8 }} className={autoOn ? 'pos' : ''}>
+                {autoOn ? `✓ Voller Jahresbetrag ${year}: ${eur(monthly * 12)}` : `Automatische Einzahlungen für ${year} deaktiviert`}
+              </p>
+            </div>
+            <label>Zusätzliche Einzahlung</label>
+            <div className="f2">
+              <select value={nd.month} onChange={e => setNd({ ...nd, month: e.target.value })}>
+                {MONTHS.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
+              </select>
+              <input type="number" inputMode="decimal" step="0.01" placeholder="Betrag (€)" value={nd.amount} onChange={e => setNd({ ...nd, amount: e.target.value })} />
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <input type="text" placeholder="Beschreibung (z. B. Weihnachtsgeld)" value={nd.description || ''} onChange={e => setNd({ ...nd, description: e.target.value })} />
+            </div>
+            <button className="b-green" style={{ width: '100%' }} onClick={addDeposit}>➕ Einzahlen</button>
+          </div>
+
+          <div className="box bx-gray">
+            <h2>Übersicht nach Monaten</h2>
+            <div className="stat s-green" style={{ marginBottom: 12 }}>
+              <small>Einzahlungen (bisher)</small>
+              <b>{eur(yearIn)}</b>
+              {year >= curY && autoOn && <i>Prognose Jahresende: {eur(projIn)}</i>}
+            </div>
+            {MONTHS.map((name, i) => {
+              const m = i + 1;
+              const planned = isPlanned(m);
+              const dl = manualDeps(m);
+              return (
+                <div key={m}>
+                  {autoOn && (
+                    <div className={'item it-g' + (planned ? ' plan' : '')}>
+                      <div className="t">
+                        <p>{name}</p>
+                        <small>{planned ? 'Geplant' : 'Automatisch'} am 01.{pad(m)}.{year}</small>
+                      </div>
+                      <span className={'amt' + (planned ? '' : ' pos')}>+ {eur(monthly)}</span>
+                    </div>
+                  )}
+                  {dl.map(d => (
+                    <div className="item it-g" key={d.id}>
+                      <div className="t"><p>{d.description || 'Zusätzliche Einzahlung'}</p><small>{name} {year}{d.description ? ' • Zusätzliche Einzahlung' : ''}</small></div>
+                      <span className="amt pos">+ {eur(d.amount)}</span>
+                      <button className="x" onClick={() => delDeposit(d.id)}>🗑️</button>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+            {!autoOn && deposits.filter(d => d.year === year).length === 0 && (
+              <p style={{ color: '#9ca3af', fontSize: 13, fontStyle: 'italic' }}>Keine Einzahlungen für {year}</p>
+            )}
+          </div>
+        </>)}
+
+        {tab === 'recurring' && (<>
+          <div className="box bx-orange">
+            <h2>🔁 Laufende Kosten hinzufügen</h2>
+            <div className="f2">
+              <div><label>Bezeichnung</label><input type="text" placeholder="z. B. Reiseversicherung" value={nr.name} onChange={e => setNr({ ...nr, name: e.target.value })} /></div>
+              <div><label>Betrag (€)</label><input type="number" inputMode="decimal" step="0.01" value={nr.amount} onChange={e => setNr({ ...nr, amount: e.target.value })} /></div>
+              <div>
+                <label>Intervall</label>
+                <select value={nr.interval} onChange={e => setNr({ ...nr, interval: e.target.value })}>
+                  {Object.entries(INTERVALS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+                </select>
+              </div>
+              <div><label>Beginn</label><input type="date" value={nr.start} onChange={e => setNr({ ...nr, start: e.target.value })} /></div>
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <label>Ende (optional)</label>
+              <input type="date" value={nr.end} onChange={e => setNr({ ...nr, end: e.target.value })} />
+            </div>
+            <p style={{ fontSize: 12, color: '#6b7280', marginBottom: 10 }}>Die Kosten werden jeweils am 1. des Monats gebucht, beginnend mit dem Monat des Beginns.</p>
+            <button className="b-orange" style={{ width: '100%' }} onClick={addRecurring}>➕ Hinzufügen</button>
+          </div>
+
+          <div className="box bx-gray">
+            <h2>Alle laufenden Kosten</h2>
+            {recurring.length === 0 ? (
+              <p style={{ color: '#9ca3af', fontSize: 13, fontStyle: 'italic' }}>Noch keine laufenden Kosten angelegt</p>
+            ) : recurring.map(r => (
+              <div className="item it-r" key={r.id}>
+                <div className="t">
+                  <p>{r.name}</p>
+                  <small>{INTERVALS[r.interval].label} • ab {fmtYM(r.start)}{r.end ? ' bis ' + fmtYM(r.end) : ''}</small>
+                </div>
+                <span className="amt neg">- {eur(r.amount)}</span>
+                <button className="x" onClick={() => delRecurring(r.id)}>🗑️</button>
+              </div>
+            ))}
+          </div>
+
+          <div className="box bx-gray">
+            <h2>Übersicht {year}</h2>
+            <div className="stat s-red" style={{ marginBottom: 12 }}>
+              <small>Laufende Kosten (bisher)</small>
+              <b>{eur(yearRecur)}</b>
+              <i>Gesamt {year}: {eur(yearRecurPlanned)}</i>
+            </div>
+            {MONTHS.map((name, i) => {
+              const m = i + 1;
+              const due = recurDueIn(year, m);
+              const planned = isPlanned(m);
+              if (due.length === 0) return null;
+              return (
+                <div key={m}>
+                  {due.map(r => (
+                    <div className={'item it-r' + (planned ? ' plan' : '')} key={r.id}>
+                      <div className="t"><p>{name} – {r.name}</p><small>{planned ? 'Geplant' : 'Gebucht'} am 01.{pad(m)}.{year}</small></div>
+                      <span className={'amt' + (planned ? '' : ' neg')}>- {eur(r.amount)}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+            {yearRecurPlanned === 0 && <p style={{ color: '#9ca3af', fontSize: 13, fontStyle: 'italic' }}>Keine laufenden Kosten in {year}</p>}
+          </div>
+        </>)}
+      </div>
+
+      <div className="card">
+        <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ margin: 0 }}>💾 Backup &amp; Übertragung</h2>
+          <button className="b-gray" onClick={() => showBackup ? setShowBackup(false) : exportData()}>{showBackup ? 'Schließen' : 'Öffnen'}</button>
+        </div>
+        {showBackup && (
+          <div style={{ marginTop: 12 }}>
+            <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 8 }}>
+              <b>Exportieren:</b> Text kopieren und sicher aufbewahren. <b>Importieren:</b> Text aus einer anderen Version hier einfügen und auf „Importieren“ tippen.
+            </p>
+            <textarea
+              value={backupText}
+              onChange={e => setBackupText(e.target.value)}
+              rows={6}
+              style={{ width: '100%', padding: 10, border: '1px solid #d1d5db', borderRadius: 10, font: '12px monospace', marginBottom: 10 }}
+            />
+            <div className="row">
+              <button className="b-blue" onClick={copyBackup}>📋 Kopieren</button>
+              <button className="b-green" onClick={importData}>⬇️ Importieren</button>
+              <button className="b-gray" onClick={exportData}>🔄 Aktuelle Daten laden</button>
+            </div>
+          </div>
+        )}
+      </div>
+      <p style={{ textAlign: 'center', fontSize: 12, color: '#6b7280' }}>Daten werden automatisch gespeichert (Claude-Artefakt oder lokal im Browser).</p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
